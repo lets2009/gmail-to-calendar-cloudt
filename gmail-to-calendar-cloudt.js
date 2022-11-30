@@ -13,11 +13,13 @@ function pickUpMessage(query, callback) {
     for (var j in messages[i]) {
       const message = messages[i][j];
       // starは処理済みとする
-      if (message.isStarred()) break;
+      if (message.isStarred()) {
+        // 処理なし
+      } else {
+        callback(message);
 
-      callback(message);
-
-      message.star();
+        message.star();
+      }
     }
   }
 }
@@ -56,14 +58,32 @@ function parseCloudt(message) {
     console.log("This message doesn't have info.");
     return;
   }
-  try {
+  // try {
     const parsedDate = result[0].replace(datePrefix, '');
+    console.log(parsedDate);
+    let year = null;
+    let month = null;
+    let dayOfMonth = null;
+    
+    if (parsedDate.includes('年')) {
+      // 2022年12月1日 08:45〜08:55'
 
-    // 2022年12月1日 08:45〜08:55'
+      year = parsedDate.match(/[0-9]{4}年/gi)[0].replace('年', '');
+      month = parsedDate.match(/年[0-9]*月/gi)[0].replace('年', '').replace('月', '');
+      dayOfMonth = parsedDate.match(/月[0-9]*日/gi)[0].replace('月', '').replace('日', '');
 
-    const year = parsedDate.match(/[0-9]{4}年/gi)[0].replace('年', '');
-    const month = parsedDate.match(/年[0-9]*月/gi)[0].replace('年', '').replace('月', '');
-    const dayOfMonth = parsedDate.match(/月[0-9]*日/gi)[0].replace('月', '').replace('日', '');
+    } else {
+      // 2022/12/1 08:45〜08:55'
+
+      year = parsedDate.match(/[0-9]{4}\//gi)[0].replace('/', '');
+      month = parsedDate.match(/\/[0-9]*\//gi)[0].replace(/\//g, '');
+      dayOfMonth = parsedDate.match(/\/[0-9]* /gi)[0].replace('/', '').replace(' ', '');
+
+      console.log(year);
+      console.log(month);
+      console.log(dayOfMonth);
+    }
+
     const startTimeHour = parsedDate.match(/[0-9]{2}:/gi)[0].replace(':', '');
     const startTimeMin = parsedDate.match(/:[0-9]{2}/gi)[0].replace(':', '');
     const endTimeHour = parsedDate.match(/[0-9]{2}:/gi)[1].replace(':', '');
@@ -71,9 +91,9 @@ function parseCloudt(message) {
 
     createEvent("英会話クラウティ", "mailDate: " + strDate,
       "", year, month, dayOfMonth, startTimeHour, startTimeMin, endTimeHour, endTimeMin);
-  } catch(e) {
-    console.error( e.stack);
-    return;
-  }
+  // } catch(e) {
+  //   console.error( e.stack);
+  //   return;
+  // }
 }
 
