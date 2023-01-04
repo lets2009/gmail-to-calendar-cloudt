@@ -13,3 +13,4 @@ https://github.com/AAkira/gmail-to-calendar
 
 ・こちらのスクリプトをGoogle App Script(GAS)として登録する必要があります。詳しくはこちらを参照してください。
 
+https://www.mileage-techno.com/gmail-to-calendar-cloudt/
